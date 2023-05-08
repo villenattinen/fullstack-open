@@ -8,6 +8,4 @@ sequenceDiagram
     server-->>browser: JSON data
     deactivate server
 
-    Note right of browser: The server responds with a URL redirect
-
 ```
