@@ -26,7 +26,6 @@ const App = () => {
   const copyPoints = [...points]
   copyPoints[selected]+=1
   const mostPoints = points.indexOf(Math.max(...points))
-  console.log(points)
 
   return (
     <div>
