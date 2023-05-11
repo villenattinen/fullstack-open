@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './index.css'
 
 const Filter = (props) => {
   return (
@@ -54,11 +55,25 @@ const Person = (props) =>
     <button onClick={props.handleClick}>delete</button>
   </div>
 
+const Notification = ({ message, className }) => {
+  if (message === null || className === null) {
+    return null
+  }
+
+  return (
+    <div className={className}>
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [nameFilter, setNameFilter] = useState('')
+  const [notifyMessage, setNotifyMessage] = useState(null)
+  const [className, setClassName] = useState(null)
 
   useEffect(() => {
     personService
@@ -93,8 +108,22 @@ const App = () => {
         .create(personObject)
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
+          setNotifyMessage(`Added ${newName}`)
+          setClassName('notify')
+          setTimeout(() => {
+            setNotifyMessage(null)
+            setClassName(null)
+          }, 5000)
           setNewName('')
           setNewNumber('')
+        })
+        .catch(error => {
+          setNotifyMessage(`Couldn't add ${newName}`)
+          setClassName('error')
+          setTimeout(() => {
+            setNotifyMessage(null)
+            setClassName(null)
+          }, 5000)
         })
     } else {
       updatePerson(person)
@@ -112,8 +141,22 @@ const App = () => {
         setPersons(
           persons.map((person) => person.id !== returnedPerson.id ? person : returnedPerson)
         )
+        setNotifyMessage(`Updated ${newName}`)
+        setClassName('notify')
+        setTimeout(() => {
+          setNotifyMessage(null)
+          setClassName(null)
+        }, 5000)
         setNewName('')
         setNewNumber('')
+      })
+      .catch(error => {
+        setNotifyMessage(`Information of ${newName} has already been removed from the server`)
+        setClassName('error')
+        setTimeout(() => {
+          setNotifyMessage(null)
+          setClassName(null)
+        }, 5000)
       })
     } 
   }
@@ -122,13 +165,31 @@ const App = () => {
     if (window.confirm(`Delete ${person.name}?`)) {
       personService
       .deletePerson(person.id)
-      setPersons(persons.filter(deletedPerson => deletedPerson.id !== person.id))
+      .then(() => {
+        setPersons(persons.filter(deletedPerson => deletedPerson.id !== person.id))
+        setNotifyMessage(`Deleted ${person.name}`)
+        setClassName('notify')
+        setTimeout(() => {
+          setNotifyMessage(null)
+          setClassName(null)
+        }, 5000)
+      })
+      .catch(error => {
+        setNotifyMessage(`Information of ${person.name} has already been removed from the server`)
+        setClassName('error')
+        setTimeout(() => {
+          setNotifyMessage(null)
+          setClassName(null)
+        }, 5000)
+      })
     }
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
+
+      <Notification message={notifyMessage} className={className}/>
 
       <Filter nameFilter={nameFilter} handleFilter={handleFilter} />
 
