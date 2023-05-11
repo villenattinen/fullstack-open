@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import personService from './services/persons'
 
 const Filter = (props) => {
   return (
@@ -12,7 +13,7 @@ const Filter = (props) => {
 
 const PersonForm = (props) => {
   return (
-    <form onSubmit={props.handleNewPerson}>
+    <form onSubmit={props.addPerson}>
       <div>
         name: <input value={props.newName} onChange={props.handleNewName} />
       </div>
@@ -36,24 +37,36 @@ const Persons = (props) => {
   return (
     <div>
       {personsToShow.map(person =>
-        <Person key={person.id} name={person.name} number={person.number} />
+        <Person 
+          key={person.id} 
+          name={person.name} 
+          number={person.number} 
+          handleClick={() => props.deletePerson(person)}
+        />
       )}
     </div>
   )
 }
 
-const Person = props => <div>{props.name} {props.number}</div>
+const Person = (props) => 
+  <div>
+    {props.name} {props.number}
+    <button onClick={props.handleClick}>delete</button>
+  </div>
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]) 
+  const [persons, setPersons] = useState([]) 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [nameFilter, setNameFilter] = useState('')
+
+  useEffect(() => {
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
+  }, [])
 
   const handleFilter = (event) => {
     setNameFilter(event.target.value)
@@ -67,19 +80,49 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-  const handleNewPerson = (event) => {
+  const addPerson = (event) => {
     event.preventDefault()
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`)
-    } else {
+    const person = persons.find(p => p.name.toLocaleLowerCase() === newName.toLocaleLowerCase())
+    if (person === undefined) {
       const personObject = {
         name: newName,
-        number: newNumber,
-        id: persons.length + 1
+        number: newNumber
       }
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+
+      personService
+        .create(personObject)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+    } else {
+      updatePerson(person)
+    }
+  }
+
+  const updatePerson = (person) => {
+    const updatedPerson = { ...person, number: newNumber}
+    if (window.confirm(
+      `${newName} is already added to phonebook, replace the old number with a newone?`
+    )) {
+      personService
+      .update(updatedPerson.id, updatedPerson)
+      .then(returnedPerson => {
+        setPersons(
+          persons.map((person) => person.id !== returnedPerson.id ? person : returnedPerson)
+        )
+        setNewName('')
+        setNewNumber('')
+      })
+    } 
+  }
+
+  const deletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+      .deletePerson(person.id)
+      setPersons(persons.filter(deletedPerson => deletedPerson.id !== person.id))
     }
   }
 
@@ -93,19 +136,16 @@ const App = () => {
 
       <PersonForm 
         persons={persons}
-        setPersons={setPersons}
         newName={newName}
-        setNewName={setNewName}
         newNumber={newNumber}
-        setNewNumber={setNewNumber}
         handleNewName={handleNewName}
         handleNewNumber={handleNewNumber}
-        handleNewPerson={handleNewPerson}
+        addPerson={addPerson}
       />
 
       <h3>Numbers</h3>
 
-      <Persons persons={persons} nameFilter={nameFilter} />
+      <Persons persons={persons} nameFilter={nameFilter} deletePerson={deletePerson}/>
     </div>
   )
 }
