@@ -69,18 +69,33 @@ test('dummy returns one', () => {
 })
 
 describe('total likes', () => {
-    test('of empty list is zero', () => {
+    test('is calculated right from a list with no objects', () => {
         const result = listHelper.totalLikes([])
         expect(result).toBe(0)
     })
 
-    test('when list has only one blog equals the likes of that', () => {
+    test('is calculated right from a list with one object', () => {
         const result = listHelper.totalLikes(listWithOneBlog)
         expect(result).toBe(5)
     })
 
-    test('of a bigger list is calculated right', () => {
+    test('is calculated right from a list with multiple objects', () => {
         const result = listHelper.totalLikes(blogs)
         expect(result).toBe(36)
+    })
+})
+
+describe('favourite blogs', () => {
+    test('returns \'undefined\' from a list with no objects', () => {
+        const result = listHelper.favoriteBlog([])
+        expect(result).toBe(undefined)
+    })
+    test('returns blog with most likes from a list with one object', () => {
+        const result = listHelper.favoriteBlog(listWithOneBlog)
+        expect(result).toEqual(listWithOneBlog[0])
+    })
+    test('returns blog with most likes from a list with multiple objects', () => {
+        const result = listHelper.favoriteBlog(blogs)
+        expect(result).toEqual(blogs[2])
     })
 })
