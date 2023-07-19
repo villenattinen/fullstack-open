@@ -1,3 +1,4 @@
+require('dotenv').config()
 const http = require('http')
 const express = require('express')
 const app = express()
@@ -11,12 +12,21 @@ const blogSchema = mongoose.Schema({
     likes: Number
 })
 
+blogSchema.set('toJSON', {
+    transform: (document, returnedObject) => {
+        returnedObject.id = returnedObject._id.toString()
+        delete returnedObject._id
+        delete returnedObject.__v
+    }
+})
+
 const Blog = mongoose.model('Blog', blogSchema)
 
-const mongoUrl = 'mongodb://localhost/bloglist'
+const mongoUrl = process.env.MONGODB_URI
 mongoose.connect(mongoUrl)
 
 app.use(cors())
+app.use(express.static('build'))
 app.use(express.json())
 
 app.get('/api/blogs', (request, response) => {
@@ -34,6 +44,20 @@ app.post('/api/blogs', (request, response) => {
         .save()
         .then(result => {
             response.status(201).json(result)
+        })
+})
+
+app.put('/api/blogs/:id', (request, response) => {
+    const { likes } = request.body
+
+    Blog
+        .findByIdAndUpdate(
+            request.params.id,
+            { likes },
+            { new: true, runValidators: true, context: 'query' }
+        )
+        .then(updatedPerson => {
+            response.json(updatedPerson)
         })
 })
 
