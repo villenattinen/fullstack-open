@@ -27,7 +27,26 @@ const mostBlogs = (blogs) => {
     const key = Object.keys(counter).find(key => counter[key] === value)
     return {
         author: key,
-        numberOfBlogs: value,
+        blogs: value,
+    }
+}
+
+const mostLikes = (blogs) => {
+    const counter = {}
+
+    blogs.forEach(blog => {
+        if (counter[blog.author]) {
+            counter[blog.author] += blog.likes
+        } else {
+            counter[blog.author] = blog.likes
+        }
+    })
+
+    const value = Math.max(...Object.values(counter))
+    const key = Object.keys(counter).find(key => counter[key] === value)
+    return {
+        author: key,
+        likes: value,
     }
 }
 
@@ -36,4 +55,5 @@ module.exports = {
     totalLikes,
     favoriteBlog,
     mostBlogs,
+    mostLikes,
 }
