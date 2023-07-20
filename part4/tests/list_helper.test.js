@@ -69,33 +69,49 @@ test('dummy returns one', () => {
 })
 
 describe('total likes', () => {
-    test('is calculated right from a list with no objects', () => {
+    test('is calculated right from a list with no blogs', () => {
         const result = listHelper.totalLikes([])
         expect(result).toBe(0)
     })
 
-    test('is calculated right from a list with one object', () => {
+    test('is calculated right from a list with one blogs', () => {
         const result = listHelper.totalLikes(listWithOneBlog)
         expect(result).toBe(5)
     })
 
-    test('is calculated right from a list with multiple objects', () => {
+    test('is calculated right from a list with multiple blogs', () => {
         const result = listHelper.totalLikes(blogs)
         expect(result).toBe(36)
     })
 })
 
 describe('favourite blogs', () => {
-    test('returns \'undefined\' from a list with no objects', () => {
+    test('returns \'undefined\' from a list with no blogs', () => {
         const result = listHelper.favoriteBlog([])
         expect(result).toBe(undefined)
     })
-    test('returns blog with most likes from a list with one object', () => {
+    test('returns blog with most likes from a list with one blogs', () => {
         const result = listHelper.favoriteBlog(listWithOneBlog)
         expect(result).toEqual(listWithOneBlog[0])
     })
-    test('returns blog with most likes from a list with multiple objects', () => {
+    test('returns blog with most likes from a list with multiple blogs', () => {
         const result = listHelper.favoriteBlog(blogs)
         expect(result).toEqual(blogs[2])
+    })
+})
+
+describe('most blogs', () => {
+    test('returns author as \'undefined\' from a list with no blogs', () => {
+        const result = listHelper.mostBlogs([])
+        console.log(result)
+        expect(result.author).toBe(undefined)
+    })
+    test('returns returns author and number of blogs from a list with one blog', () => {
+        const result = listHelper.mostBlogs(listWithOneBlog)
+        expect(result).toEqual({ author: 'Edsger W. Dijkstra', numberOfBlogs: 1 })
+    })
+    test('returns author and number of blogs from a list with multiple blogs', () => {
+        const result = listHelper.mostBlogs(blogs)
+        expect(result).toEqual({ author: "Robert C. Martin", numberOfBlogs: 3 })
     })
 })
