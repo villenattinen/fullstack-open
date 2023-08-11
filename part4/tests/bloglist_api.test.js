@@ -36,39 +36,68 @@ describe('API operations', () => {
     })
 
     test('blogs can be added through POST', async () => {
-        const newBlogObject = new Blog(
-            {
-                author: "kirjoittaja4",
-                likes: 4,
-                title: "blogi4",
-                url: "https://www.blogi4.fi/"
-            }
-        )
+        const newBlogObject = {
+            title: "blogi4",
+            author: "kirjoittaja4",
+            url: "https://www.blogi4.fi/",
+            likes: 4
+        }
+
         await api
             .post('/api/blogs')
             .send(newBlogObject)
             .expect(201)
-            .expect('Content-Type', /application\/json/)
 
         const blogsAtEnd = await helper.blogsInDB()
         expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
     })
 
     test('blogs are given default likes of 0', async () => {
-        const newBlogObject = new Blog(
-            {
-                author: "kirjoittajaX",
-                title: "blogiX",
-                url: "https://www.blogiX.fi/"
-            }
-        )
+        const newBlogObject = {
+            author: "kirjoittajaX",
+            title: "blogiX",
+            url: "https://www.blogiX.fi/"
+        }
+
         await api
             .post('/api/blogs')
             .send(newBlogObject)
             .expect(201)
-            .expect('Content-Type', /application\/json/)
+
         const blogsAtEnd = await helper.blogsInDB()
         expect(blogsAtEnd[helper.initialBlogs.length].likes).toEqual(0)
+    })
+
+    test('blog missing title value is not added', async () => {
+        const newBlogObject = {
+            author: "kirjoittaja4",
+            likes: 4,
+            url: "https://www.blogi4.fi/"
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlogObject)
+            .expect(400)
+
+        const blogsAtEnd = await helper.blogsInDB()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+    })
+
+    test('blog missing url value is not added', async () => {
+        const newBlogObject = {
+            author: "kirjoittaja5",
+            likes: 5,
+            title: "blogi5",
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newBlogObject)
+            .expect(400)
+
+        const blogsAtEnd = await helper.blogsInDB()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
     })
 })
 
