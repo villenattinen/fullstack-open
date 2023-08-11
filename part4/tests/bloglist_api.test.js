@@ -1,38 +1,17 @@
-const mongoose = require('mongoose')
 const supertest = require('supertest')
+const mongoose = require('mongoose')
+const helper = require('./test_helper')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
 
-const initialBlogs = [
-    {
-        author: "kirjoittaja1",
-        likes: 1,
-        title: "blogi1",
-        url: "https://www.blogi1.fi/"
-    },
-    {
-        author: "kirjoittaja2",
-        likes: 2,
-        title: "blogi2",
-        url: "https://www.blogi2.fi/"
-    },
-    {
-        author: "kirjoittaja3",
-        likes: 3,
-        title: "blogi3",
-        url: "https://www.blogi3.fi/"
-    },
-]
-
 beforeEach(async () => {
     await Blog.deleteMany({})
-    let blogObject = new Blog(initialBlogs[0])
-    await blogObject.save()
-    blogObject = new Blog(initialBlogs[1])
-    await blogObject.save()
-    blogObject = new Blog(initialBlogs[2])
-    await blogObject.save()
+
+    const blogObjects = helper.initialBlogs
+        .map(blog => new Blog(blog))
+    const promiseArray = blogObjects.map(blog => blog.save())
+    await Promise.all(promiseArray)
 })
 
 describe('API operations', () => {
@@ -46,7 +25,7 @@ describe('API operations', () => {
     test('there is the right number of blogs', async () => {
         const response = await api.get('/api/blogs')
 
-        expect(response.body).toHaveLength(initialBlogs.length)
+        expect(response.body).toHaveLength(helper.initialBlogs.length)
     })
 
     test('blogs have \'id\' as identifier', async () => {
@@ -70,8 +49,26 @@ describe('API operations', () => {
             .send(newBlogObject)
             .expect(201)
             .expect('Content-Type', /application\/json/)
-        const response = await api.get('/api/blogs')
-        expect(response.body).toHaveLength(initialBlogs.length + 1)
+
+        const blogsAtEnd = await helper.blogsInDB()
+        expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+    })
+
+    test('blogs are given default likes of 0', async () => {
+        const newBlogObject = new Blog(
+            {
+                author: "kirjoittajaX",
+                title: "blogiX",
+                url: "https://www.blogiX.fi/"
+            }
+        )
+        await api
+            .post('/api/blogs')
+            .send(newBlogObject)
+            .expect(201)
+            .expect('Content-Type', /application\/json/)
+        const blogsAtEnd = await helper.blogsInDB()
+        expect(blogsAtEnd[helper.initialBlogs.length].likes).toEqual(0)
     })
 })
 
