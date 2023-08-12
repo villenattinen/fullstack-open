@@ -110,7 +110,6 @@ describe('API operations', () => {
         test('a blog can be deleted', async () => {
             const blogsAtStart = await helper.blogsInDB()
             const blogToDelete = blogsAtStart[0]
-            // console.log(blogToDelete)
           
             await api
               .delete(`/api/blogs/${blogToDelete.id}`)
@@ -123,6 +122,84 @@ describe('API operations', () => {
             )
             expect(blogsAtEnd).not.toContain(blogToDelete)
           })
+    })
+
+    describe('mutating blogs', () => {
+        test('title of a blog can be edited', async () => {
+            const blogsAtStart = await helper.blogsInDB()
+            const blogToEdit = blogsAtStart[0]
+
+            const editedBlogObject = {
+                title: "muutettu title",
+            }
+
+            await api
+              .put(`/api/blogs/${blogToEdit.id}`)
+              .send(editedBlogObject)
+              .expect(200)
+          
+            const blogsAtEnd = await helper.blogsInDB()
+
+            expect(blogsAtEnd[0].title).not.toEqual(blogToEdit.title)
+            expect(blogsAtEnd[0].title).toEqual(editedBlogObject.title)
+        })
+
+        test('url of a blog can be edited', async () => {
+            const blogsAtStart = await helper.blogsInDB()
+            const blogToEdit = blogsAtStart[0]
+
+            const editedBlogObject = {
+                url: "uusimuutettuurl.fi/",
+            }
+
+            await api
+              .put(`/api/blogs/${blogToEdit.id}`)
+              .send(editedBlogObject)
+              .expect(200)
+          
+            const blogsAtEnd = await helper.blogsInDB()
+
+            expect(blogsAtEnd[0].url).not.toEqual(blogToEdit.url)
+            expect(blogsAtEnd[0].url).toEqual(editedBlogObject.url)
+        })
+
+        test('author of a blog can be edited', async () => {
+            const blogsAtStart = await helper.blogsInDB()
+            const blogToEdit = blogsAtStart[0]
+
+            const editedBlogObject = {
+                author: "eri kirjoittaja",
+            }
+
+            await api
+              .put(`/api/blogs/${blogToEdit.id}`)
+              .send(editedBlogObject)
+              .expect(200)
+          
+            const blogsAtEnd = await helper.blogsInDB()
+
+            expect(blogsAtEnd[0].author).not.toEqual(blogToEdit.author)
+            expect(blogsAtEnd[0].author).toEqual(editedBlogObject.author)
+        })
+
+        test('likes of a blog can be edited', async () => {
+            const blogsAtStart = await helper.blogsInDB()
+            const blogToEdit = blogsAtStart[0]
+
+            const editedBlogObject = {
+                likes: blogToEdit.likes + 1,
+            }
+
+            await api
+              .put(`/api/blogs/${blogToEdit.id}`)
+              .send(editedBlogObject)
+              .expect(200)
+          
+            const blogsAtEnd = await helper.blogsInDB()
+
+            expect(blogsAtEnd[0].likes).not.toEqual(blogToEdit.likes)
+            expect(blogsAtEnd[0].likes).toEqual(editedBlogObject.likes)
+        })
     })
 })
 
