@@ -85,6 +85,7 @@ describe('API operations', () => {
 
             const blogsAtEnd = await helper.blogsInDB()
             expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+            expect(blogsAtEnd).not.toContain(newBlogObject)
         })
 
         test('blog missing url value is not added', async () => {
@@ -101,7 +102,27 @@ describe('API operations', () => {
 
             const blogsAtEnd = await helper.blogsInDB()
             expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+            expect(blogsAtEnd).not.toContain(newBlogObject)
         })
+    })
+
+    describe('deleting blogs', () => {
+        test('a blog can be deleted', async () => {
+            const blogsAtStart = await helper.blogsInDB()
+            const blogToDelete = blogsAtStart[0]
+            // console.log(blogToDelete)
+          
+            await api
+              .delete(`/api/blogs/${blogToDelete.id}`)
+              .expect(204)
+          
+            const blogsAtEnd = await helper.blogsInDB()
+          
+            expect(blogsAtEnd).toHaveLength(
+              helper.initialBlogs.length - 1
+            )
+            expect(blogsAtEnd).not.toContain(blogToDelete)
+          })
     })
 })
 
