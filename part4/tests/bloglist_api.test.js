@@ -41,13 +41,11 @@ describe('API operations', () => {
 
     describe('adding blogs through POST', () => {
         test('blogs can be added through POST', async () => {
-          const usersAtStart = await helper.usersInDb()
             const newBlogObject = {
                 title: "blogi4",
                 author: "kirjoittaja4",
                 url: "https://www.blogi4.fi/",
                 likes: 4,
-                user: usersAtStart[0]
             }
 
             await api
@@ -60,12 +58,10 @@ describe('API operations', () => {
         })
 
         test('blogs are given default likes of 0', async () => {
-          const usersAtStart = await helper.usersInDb()
             const newBlogObject = {
                 author: "kirjoittajaX",
                 title: "blogiX",
                 url: "https://www.blogiX.fi/",
-                user: usersAtStart[0]
             }
 
             await api
@@ -78,12 +74,10 @@ describe('API operations', () => {
         })
 
         test('blog missing title value is not added', async () => {
-          const usersAtStart = await helper.usersInDb()
             const newBlogObject = {
                 author: "kirjoittaja4",
                 likes: 4,
                 url: "https://www.blogi4.fi/",
-                user: usersAtStart[0]
             }
 
             await api
@@ -97,12 +91,10 @@ describe('API operations', () => {
         })
 
         test('blog missing url value is not added', async () => {
-          const usersAtStart = await helper.usersInDb()
             const newBlogObject = {
                 author: "kirjoittaja5",
                 likes: 5,
                 title: "blogi5",
-                user: usersAtStart[0]
             }
 
             await api
