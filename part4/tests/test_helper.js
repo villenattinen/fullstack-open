@@ -35,6 +35,8 @@ const initialUsers = [
     }
 ]
 
+const expiredToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY2NWUwOWNjNDY1ZmM0NDg3N2Q0NDllMiIsImlhdCI6MTcxNzQzODkyNSwiZXhwIjoxNzE3NDQyNTI1fQ.D4jZKXSc7vq6kJ7efKba4K0sH-OsHjuDQ_xM25Utzm4"
+
 const blogsInDb = async () => {
     const blogs = await Blog.find({})
     return blogs.map(blog => blog.toJSON())
@@ -46,5 +48,5 @@ const usersInDb = async () => {
   }
 
 module.exports = {
-    initialBlogs, initialUsers, blogsInDb, usersInDb
+    initialBlogs, initialUsers, expiredToken, blogsInDb, usersInDb
 }
