@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -8,7 +9,8 @@ const App = () => {
   const [newBlogTitle, setNewBlogTitle] = useState('')
   const [newBlogAuthor, setNewBlogAuthor] = useState('')
   const [newBlogUrl, setNewBlogUrl] = useState('')
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationClassName, setNotificationClassName] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -39,15 +41,21 @@ const App = () => {
       blogService
         .create(blogObject)
         .then(data => {
+          setNotificationMessage(`New blog ${newBlogTitle} by ${newBlogAuthor} created`)
+          setNotificationClassName('success')
           setBlogs(blogs.concat(data))
           setNewBlogTitle('')
           setNewBlogAuthor('')
           setNewBlogUrl('')
         })
-    } catch (exception) {
-      setErrorMessage('Error creating blog')
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotificationMessage(null)
+      }, 5000)
+    } catch (exception) {
+      setNotificationMessage('Error creating blog')
+      setNotificationClassName('error')
+      setTimeout(() => {
+        setNotificationMessage(null)
       }, 5000)
     }
   }
@@ -67,9 +75,10 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setNotificationMessage('Wrong username or password')
+      setNotificationClassName('error')
       setTimeout(() => {
-        setErrorMessage(null)
+        setNotificationMessage(null)
       }, 5000)
     }
   }
@@ -150,26 +159,29 @@ const App = () => {
     </div>
   )
 
-  if (user === null) {
-    return (
-      <div>
-        {loginForm()}
-      </div>
-    )
-  }
-
   return (
     <div>
-      <h2>blogs</h2>
-      <div>
-        {user.name} logged in <button onClick={handleLogout}>logout</button>
-      </div>
-      <div>
-        {blogForm()}
-      </div>
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+      <Notification message={notificationMessage} className={notificationClassName} />
+
+      {!user && loginForm()}
+
+      {user &&
+        <div>
+          <h2>blogs</h2>
+          <div>
+            {user.name} logged in
+            <button onClick={handleLogout}>
+              logout
+            </button>
+          </div>
+          <div>
+            {blogForm()}
+          </div>
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
+        </div>
+      }
     </div>
   )
 }
