@@ -49,6 +49,22 @@ const App = () => {
     }
   }
 
+  const updateBlog = (id, blogObject) => {
+    try {
+      blogService
+        .update(id, blogObject)
+        .then(data => {
+          setBlogs(blogs.map(blog => blog.id !== id ? blog : data))
+        })
+    } catch (exception) {
+      setNotificationMessage('Error updating blog')
+      setNotificationClassName('error')
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
+    }
+  }
+
   const handleLogin = async ({ username, password }) => {
     try {
       const user = await loginService.login({
@@ -103,7 +119,7 @@ const App = () => {
             <BlogForm createBlog={createBlog} />
           </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
           )}
         </div>
       }
