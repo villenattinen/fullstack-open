@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
+import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -89,16 +90,6 @@ const App = () => {
     blogService.setToken(null)
   }
 
-  const handleBlogChange = (event) => {
-    if (event.target.name === 'title') {
-      setNewBlogTitle(event.target.value)
-    } else if (event.target.name === 'author') {
-      setNewBlogAuthor(event.target.value)
-    } else if (event.target.name === 'url') {
-      setNewBlogUrl(event.target.value)
-    }
-  }
-
   const loginForm = () => (
     <div>
       <h2>Log in to application</h2>
@@ -126,39 +117,6 @@ const App = () => {
     </div>
   )
 
-  const blogForm = () => (
-    <div>
-      <h2>create new</h2>
-      <form onSubmit={createBlog}>
-        <div>
-          title:
-          <input
-            value={newBlogTitle}
-            onChange={handleBlogChange}
-            name='title'
-          />
-        </div>
-        <div>
-        author:
-        <input
-          value={newBlogAuthor}
-          onChange={handleBlogChange}
-          name='author'
-        />
-        </div>
-        <div>
-        url:
-        <input
-          value={newBlogUrl}
-          onChange={handleBlogChange}
-          name='url'
-        />
-        </div>
-        <button type="submit">create</button>
-      </form>
-    </div>
-  )
-
   return (
     <div>
       <Notification message={notificationMessage} className={notificationClassName} />
@@ -175,7 +133,15 @@ const App = () => {
             </button>
           </div>
           <div>
-            {blogForm()}
+            <BlogForm
+              createBlog={createBlog}
+              handleNewBlogTitleChange={({ target }) => setNewBlogTitle(target.value)}
+              handleNewBlogAuthorChange={({ target }) => setNewBlogAuthor(target.value)}
+              handleNewBlogUrlChange={({ target }) => setNewBlogUrl(target.value)}
+              newBlogTitle={newBlogTitle}
+              newBlogAuthor={newBlogAuthor}
+              newBlogUrl={newBlogUrl} 
+            />
           </div>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
