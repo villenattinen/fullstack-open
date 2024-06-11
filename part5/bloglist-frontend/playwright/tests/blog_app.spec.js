@@ -10,13 +10,6 @@ describe('Blog app', () => {
         password: 'salainen',
       },
     })
-    await request.post('http://localhost:3003/api/users', {
-      data: {
-        name: 'Toinen Matti',
-        username: 'mattimasa',
-        password: 'nenialas',
-      },
-    })
 
     await page.goto('http://localhost:5173')
   })
@@ -89,6 +82,33 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'remove' }).click()
 
       await expect(page.getByText('test title test author')).toHaveCount(0)
+    })
+
+    test('only the user who created a blog sees the remove button', async ({ page, request }) => {
+      await page.getByRole('button' , { name: 'new blog' }).click()
+
+      await page.getByRole('textbox', { name: 'title' }).fill('test title')
+      await page.getByRole('textbox', { name: 'author' }).fill('test author')
+      await page.getByRole('textbox', { name: 'url' }).fill('test url')
+      await page.getByRole('button', { name: 'create' }).click()
+
+      await page.getByRole('button', { name: 'logout' }).click()
+
+      await request.post('http://localhost:3003/api/users', {
+        data: {
+          name: 'Toinen Matti',
+          username: 'mattimasa',
+          password: 'nenialas',
+        },
+      })
+
+      await page.getByRole('textbox').first().fill('mattimasa')
+      await page.getByRole('textbox').last().fill('nenialas')
+      await page.getByRole('button' , { name: 'login' }).click()
+
+      await page.getByRole('button', { name: 'view' }).click()
+
+      await expect(page.getByRole('button', { name: 'remove' })).toHaveCount(0)
     })
   })
 })
