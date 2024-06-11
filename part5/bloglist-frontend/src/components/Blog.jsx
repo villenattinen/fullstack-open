@@ -9,27 +9,29 @@ const Blog = ({ blog, updateBlog }) => {
     marginBottom: 5
   }
 
+  const [blogObject, setBlogObject] = useState(blog)
   const [isExtended, setIsExtended] = useState(false)
 
   const updateLikes = () => {
-    const updatedBlog = {...blog, likes: blog.likes + 1}
-    updateBlog(blog.id, updatedBlog)
+    const updatedBlog = ({...blogObject, likes: blogObject.likes + 1})
+    updateBlog(updatedBlog)
+    setBlogObject(updatedBlog)
   }
 
   return (
     <div style={blogStyle}>
       <div>
-        {blog.title} {blog.author}
+        {blogObject.title} {blogObject.author}
         {!isExtended && <button onClick={() => (setIsExtended(!isExtended))}>view</button>}
       </div>
       {isExtended && 
         <div>
-          {blog.url}
+          {blogObject.url}
           <br />
-          likes {blog.likes}
+          likes {blogObject.likes}
           <button onClick={updateLikes}>like</button>
           <br />
-          {blog.user?.name}
+          {blogObject.user?.name}
           <br />
           <button onClick={() => (setIsExtended(!isExtended))}>hide</button>
         </div>

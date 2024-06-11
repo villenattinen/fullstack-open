@@ -49,12 +49,12 @@ const App = () => {
     }
   }
 
-  const updateBlog = (id, blogObject) => {
+  const updateBlog = (blogObject) => {
     try {
       blogService
-        .update(id, blogObject)
+        .update(blogObject)
         .then(data => {
-          setBlogs(blogs.map(blog => blog.id !== id ? blog : data))
+          setBlogs(blogs.map(blog => blog.id !== blogObject.id ? blog : data))
         })
     } catch (exception) {
       setNotificationMessage('Error updating blog')
