@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, updateBlog }) => {
+const Blog = ({ blog, username, updateBlog, deleteBlog }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -18,11 +18,21 @@ const Blog = ({ blog, updateBlog }) => {
     setBlogObject(updatedBlog)
   }
 
+  const removeBlog = () => {
+    deleteBlog(blogObject)
+  }
+
+  const toggleVisibility = () => {
+    setIsExtended(!isExtended)
+  }
+
+  const buttonLabel = isExtended ? 'hide' : 'view'
+
   return (
     <div style={blogStyle}>
       <div>
         {blogObject.title} {blogObject.author}
-        {!isExtended && <button onClick={() => (setIsExtended(!isExtended))}>view</button>}
+        {<button onClick={toggleVisibility}>{buttonLabel}</button>}
       </div>
       {isExtended && 
         <div>
@@ -33,7 +43,9 @@ const Blog = ({ blog, updateBlog }) => {
           <br />
           {blogObject.user?.name}
           <br />
-          <button onClick={() => (setIsExtended(!isExtended))}>hide</button>
+          {username === blogObject.user?.username && 
+            <button style={{backgroundColor:"red"}} onClick={removeBlog}>remove</button>
+          }
         </div>
       }
     </div>

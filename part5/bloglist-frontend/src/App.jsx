@@ -39,12 +39,14 @@ const App = () => {
         })
       setTimeout(() => {
         setNotificationMessage(null)
+        setNotificationClassName(null)
       }, 5000)
     } catch (exception) {
       setNotificationMessage('Error creating blog')
       setNotificationClassName('error')
       setTimeout(() => {
         setNotificationMessage(null)
+        setNotificationClassName(null)
       }, 5000)
     }
   }
@@ -61,6 +63,32 @@ const App = () => {
       setNotificationClassName('error')
       setTimeout(() => {
         setNotificationMessage(null)
+        setNotificationClassName(null)
+      }, 5000)
+    }
+  }
+
+  const deleteBlog = (blogObject) => {
+    try {
+      if (window.confirm(`Delete blog ${blogObject.title} by ${blogObject.author}`)) {
+        blogService
+          .remove(blogObject.id)
+          .then(() => {
+            setBlogs(blogs.filter(blog => blog.id != blogObject.id))
+            setNotificationMessage(`Blog ${blogObject.title} deleted`)
+            setNotificationClassName('success')
+            setTimeout(() => {
+              setNotificationMessage(null)
+              setNotificationClassName(null)
+            }, 5000)
+          })
+      }
+    } catch (exception) {
+      setNotificationMessage('Error deleting blog')
+      setNotificationClassName('error')
+      setTimeout(() => {
+        setNotificationMessage(null)
+        setNotificationClassName(null)
       }, 5000)
     }
   }
@@ -80,12 +108,14 @@ const App = () => {
       setNotificationClassName('success')
       setTimeout(() => {
         setNotificationMessage(null)
+        setNotificationClassName(null)
       }, 5000)
     } catch (exception) {
       setNotificationMessage('Wrong username or password')
       setNotificationClassName('error')
       setTimeout(() => {
         setNotificationMessage(null)
+        setNotificationClassName(null)
       }, 5000)
     }
   }
@@ -124,7 +154,7 @@ const App = () => {
                 return firstBlog.likes < secondBlog.likes ? 1: -1
               })
               .map(blog =>
-                <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+                <Blog key={blog.id} blog={blog} username={user.username} updateBlog={updateBlog} deleteBlog={deleteBlog} />
               )
           }
         </div>
