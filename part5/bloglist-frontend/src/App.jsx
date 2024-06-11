@@ -16,7 +16,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -34,7 +34,9 @@ const App = () => {
       blogService
         .create(blogObject)
         .then(data => {
-          setNotificationMessage(`New blog ${blogObject.title} by ${blogObject.author} created`)
+          setNotificationMessage(
+            `New blog ${blogObject.title} by ${blogObject.author} created`
+          )
           setNotificationClassName('success')
           setBlogs(blogs.concat(data))
         })
@@ -71,11 +73,15 @@ const App = () => {
 
   const deleteBlog = (blogObject) => {
     try {
-      if (window.confirm(`Delete blog ${blogObject.title} by ${blogObject.author}`)) {
+      if (
+        window.confirm(
+          `Delete blog ${blogObject.title} by ${blogObject.author}`
+        )
+      ) {
         blogService
           .remove(blogObject.id)
           .then(() => {
-            setBlogs(blogs.filter(blog => blog.id != blogObject.id))
+            setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
             setNotificationMessage(`Blog ${blogObject.title} deleted`)
             setNotificationClassName('success')
             setTimeout(() => {
@@ -131,9 +137,12 @@ const App = () => {
 
   return (
     <div>
-      <Notification message={notificationMessage} className={notificationClassName} />
+      <Notification
+        message={notificationMessage}
+        className={notificationClassName}
+      />
 
-      {!user && 
+      {!user &&
         <LoginForm handleLogin={handleLogin} />
       }
 
@@ -155,7 +164,13 @@ const App = () => {
                 return firstBlog.likes < secondBlog.likes ? 1: -1
               })
               .map(blog =>
-                <Blog key={blog.id} blog={blog} username={user.username} updateBlog={updateBlog} deleteBlog={deleteBlog} />
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  username={user.username}
+                  updateBlog={updateBlog}
+                  deleteBlog={deleteBlog}
+                />
               )
           }
         </div>
