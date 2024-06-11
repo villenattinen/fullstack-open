@@ -1,15 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import Notification from './components/Notification'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [newBlogTitle, setNewBlogTitle] = useState('')
-  const [newBlogAuthor, setNewBlogAuthor] = useState('')
-  const [newBlogUrl, setNewBlogUrl] = useState('')
   const [notificationMessage, setNotificationMessage] = useState(null)
   const [notificationClassName, setNotificationClassName] = useState(null)
   const [username, setUsername] = useState('')
@@ -30,24 +28,15 @@ const App = () => {
     }
   }, [])
 
-  const createBlog = (event) => {
-    event.preventDefault()
+  const createBlog = (blogObject) => {
     try {
-      const blogObject = {
-        title: newBlogTitle,
-        author: newBlogAuthor,
-        url: newBlogUrl,
-      }
-
+      blogFormRef.current.toggleVisibility()
       blogService
         .create(blogObject)
         .then(data => {
-          setNotificationMessage(`New blog ${newBlogTitle} by ${newBlogAuthor} created`)
+          setNotificationMessage(`New blog ${blogObject.title} by ${blogObject.author} created`)
           setNotificationClassName('success')
           setBlogs(blogs.concat(data))
-          setNewBlogTitle('')
-          setNewBlogAuthor('')
-          setNewBlogUrl('')
         })
       setTimeout(() => {
         setNotificationMessage(null)
@@ -117,6 +106,8 @@ const App = () => {
     </div>
   )
 
+  const blogFormRef = useRef()
+
   return (
     <div>
       <Notification message={notificationMessage} className={notificationClassName} />
@@ -132,17 +123,9 @@ const App = () => {
               logout
             </button>
           </div>
-          <div>
-            <BlogForm
-              createBlog={createBlog}
-              handleNewBlogTitleChange={({ target }) => setNewBlogTitle(target.value)}
-              handleNewBlogAuthorChange={({ target }) => setNewBlogAuthor(target.value)}
-              handleNewBlogUrlChange={({ target }) => setNewBlogUrl(target.value)}
-              newBlogTitle={newBlogTitle}
-              newBlogAuthor={newBlogAuthor}
-              newBlogUrl={newBlogUrl} 
-            />
-          </div>
+          <Togglable buttonLabel="new blog" ref={blogFormRef}>
+            <BlogForm createBlog={createBlog} />
+          </Togglable>
           {blogs.map(blog =>
             <Blog key={blog.id} blog={blog} />
           )}
