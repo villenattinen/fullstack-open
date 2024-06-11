@@ -10,6 +10,13 @@ describe('Blog app', () => {
         password: 'salainen',
       },
     })
+    await request.post('http://localhost:3003/api/users', {
+      data: {
+        name: 'Toinen Matti',
+        username: 'mattimasa',
+        password: 'nenialas',
+      },
+    })
 
     await page.goto('http://localhost:5173')
   })
@@ -53,6 +60,20 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'create' }).click()
 
       await expect(page.getByText('test title test author')).toBeVisible()
+    })
+
+    test('a blog can be liked', async ({ page }) => {
+      await page.getByRole('button' , { name: 'new blog' }).click()
+
+      await page.getByRole('textbox', { name: 'title' }).fill('test title')
+      await page.getByRole('textbox', { name: 'author' }).fill('test author')
+      await page.getByRole('textbox', { name: 'url' }).fill('test url')
+      await page.getByRole('button', { name: 'create' }).click()
+
+      await page.getByRole('button', { name: 'view' }).click()
+      await page.getByRole('button', { name: 'like' }).click()
+
+      await expect(page.getByText('likes 1')).toBeVisible()
     })
   })
 })
