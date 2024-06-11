@@ -22,7 +22,7 @@ describe('Blog app', () => {
   })
 
   test('Login form is shown', async ({ page }) => {
-    const locator = await page.getByText('Log in to application')
+    const locator = page.getByText('Log in to application')
     await expect(locator).toBeVisible()
   })
 
@@ -74,6 +74,21 @@ describe('Blog app', () => {
       await page.getByRole('button', { name: 'like' }).click()
 
       await expect(page.getByText('likes 1')).toBeVisible()
+    })
+
+    test('a blog can be deleted', async ({ page }) => {
+      await page.getByRole('button' , { name: 'new blog' }).click()
+
+      await page.getByRole('textbox', { name: 'title' }).fill('test title')
+      await page.getByRole('textbox', { name: 'author' }).fill('test author')
+      await page.getByRole('textbox', { name: 'url' }).fill('test url')
+      await page.getByRole('button', { name: 'create' }).click()
+
+      await page.getByRole('button', { name: 'view' }).click()
+      page.on('dialog', dialog => dialog.accept())
+      await page.getByRole('button', { name: 'remove' }).click()
+
+      await expect(page.getByText('test title test author')).toHaveCount(0)
     })
   })
 })
