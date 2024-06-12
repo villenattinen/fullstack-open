@@ -30,7 +30,7 @@ const Blog = ({ blog, username, updateBlog, deleteBlog }) => {
   const buttonLabel = isExtended ? 'hide' : 'view'
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} name='blog'>
       <div>
         {blogObject.title} {blogObject.author}
         {<button onClick={toggleVisibility}>{buttonLabel}</button>}

@@ -135,5 +135,74 @@ describe('Blog app', () => {
       // Check that the remove button is not visible
       await expect(page.getByRole('button', { name: 'remove' })).toHaveCount(0)
     })
+
+    test('blogs are ordered by number of likes', async ({ page }) => {
+      // Open the new blog form
+      await page.getByRole('button' , { name: 'new blog' }).click()
+      // Fill in the form
+      await page.getByRole('textbox', { name: 'title' }).fill('test title 1')
+      await page.getByRole('textbox', { name: 'author' }).fill('test author 1')
+      await page.getByRole('textbox', { name: 'url' }).fill('test url 1')
+      // Submit the form to add first blog
+      await page.getByRole('button', { name: 'create' }).click()
+
+      // Open the new blog form
+      await page.getByRole('button' , { name: 'new blog' }).click()
+      // Fill in the form
+      await page.getByRole('textbox', { name: 'title' }).fill('test title 2')
+      await page.getByRole('textbox', { name: 'author' }).fill('test author 2')
+      await page.getByRole('textbox', { name: 'url' }).fill('test url 2')
+      // Submit the form to add second blog
+      await page.getByRole('button', { name: 'create' }).click()
+
+      // Open the new blog form
+      await page.getByRole('button' , { name: 'new blog' }).click()
+      // Fill in the form
+      await page.getByRole('textbox', { name: 'title' }).fill('test title 3')
+      await page.getByRole('textbox', { name: 'author' }).fill('test author 3')
+      await page.getByRole('textbox', { name: 'url' }).fill('test url 3')
+      // Submit the form to add third blog
+      await page.getByRole('button', { name: 'create' }).click()
+
+      // Open the blogs
+      const firstBlog = page.locator('[name="blog"]', { hasText: 'test title 1 test author 1' })
+      const secondBlog = page.locator('[name="blog"]', { hasText: 'test title 2 test author 2' })
+      const thirdBlog = page.locator('[name="blog"]', { hasText: 'test title 3 test author 3' })
+
+      await firstBlog.getByRole('button', { name: 'view' }).click()
+      await secondBlog.getByRole('button', { name: 'view' }).click()
+      await thirdBlog.getByRole('button', { name: 'view' }).click()
+
+      // Like the blogs
+
+      // Like the first blog once
+      await firstBlog.getByRole('button', { name: 'like' }).click()
+      // Like the second blog twice
+      await secondBlog.getByRole('button', { name: 'like' }).click()
+      await secondBlog.getByRole('button', { name: 'like' }).click()
+      // Like the third blog thrice
+      await thirdBlog.getByRole('button', { name: 'like' }).click()
+      await thirdBlog.getByRole('button', { name: 'like' }).click()
+      await thirdBlog.getByRole('button', { name: 'like' }).click()
+
+      const firstBlogListed = page.locator('[name="blog"]').first()
+      const secondBlogListed = page.locator('[name="blog"]').nth(1)
+      const thirdBlogListed = page.locator('[name="blog"]').nth(2)
+
+      // Check that the third blog added is the first listed
+      await expect(firstBlogListed).toContainText('test title 3 test author 3')
+      // Check for the right number of likes
+      await expect(firstBlogListed.getByText('likes 3')).toBeVisible()
+
+      // Check that the second blog added is the second listed
+      await expect(secondBlogListed).toContainText('test title 2 test author 2')
+      // Check for the right number of likes
+      await expect(secondBlogListed.getByText('likes 2')).toBeVisible()
+
+      // Check that the first blog added is the third listed
+      await expect(thirdBlogListed).toContainText('test title 1 test author 1')
+      // Check for the right number of likes
+      await expect(thirdBlogListed.getByText('likes 1')).toBeVisible()
+    })
   })
 })
