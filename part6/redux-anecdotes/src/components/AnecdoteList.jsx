@@ -18,7 +18,7 @@ const AnecodeList = () => {
 	}
 
 	return (
-		anecdotes.sort((firstAnecdote, secondAnecdote) => 
+		[...anecdotes].sort((firstAnecdote, secondAnecdote) => 
 			secondAnecdote.votes - firstAnecdote.votes).map(anecdote =>
 				<div key={anecdote.id}>
 					<div>
