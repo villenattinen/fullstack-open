@@ -33,9 +33,9 @@ export const createAnecdote = (content) => {
   }
 }
 
-export const voteAnecdote = (id) => {
+export const voteAnecdote = (anecdote) => {
   return async dispatch => {
-    await anecdoteService.updateVotes(id)
+    await anecdoteService.updateVotes(anecdote)
     dispatch(setAnecdotes(await anecdoteService.getAll()))
   }
 }
