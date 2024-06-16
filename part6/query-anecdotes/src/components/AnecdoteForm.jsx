@@ -16,6 +16,12 @@ const AnecdoteForm = () => {
         notification: `anecdote '${newAnecdote.content}' created`,
       })
     },
+    onError: () => {
+      notificationDispatch({
+        type: 'SET_NOTIFICATION',
+        notification: 'too short anecdote, must have length 5 or more',
+      })
+    },
   })
 
   const onCreate = (event) => {
