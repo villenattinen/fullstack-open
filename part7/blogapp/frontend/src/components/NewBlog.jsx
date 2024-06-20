@@ -1,9 +1,14 @@
 import React, { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { createBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const NewBlog = ({ doCreate }) => {
+const NewBlog = () => {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [author, setAuthor] = useState('')
+
+  const dispatch = useDispatch()
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value)
@@ -19,7 +24,8 @@ const NewBlog = ({ doCreate }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    doCreate({ title, url, author })
+    dispatch(createBlog({ title, url, author }))
+    dispatch(setNotification(`Blog created: ${title}, ${author}`, 'success', 5))
     setAuthor('')
     setTitle('')
     setUrl('')
