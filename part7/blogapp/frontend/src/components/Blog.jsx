@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { updateBlog, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import storage from '../services/storage'
 
 const Blog = ({ blog }) => {
   const [visible, setVisible] = useState(false)
 
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.login)
 
   const handleVote = async (blog) => {
     console.log('updating', blog)
@@ -42,9 +42,9 @@ const Blog = ({ blog }) => {
     marginBottom: 5,
   }
 
-  const canRemove = blog.user ? blog.user.username === storage.me() : true
+  const canRemove = blog.user ? blog.user.username === user.username : true
 
-  console.log(blog.user, storage.me(), canRemove)
+  console.log(blog.user, user.username, canRemove)
 
   return (
     <div style={style} className="blog">
