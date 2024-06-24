@@ -10,6 +10,10 @@ const Blog = () => {
   const id = useParams().id
   const blog = blogs.find((blog) => blog.id === id)
 
+  if (!user || !blog) {
+    return null
+  }
+
   const handleVote = async (blog) => {
     console.log('updating', blog)
     const updatedBlog = {
