@@ -9,6 +9,7 @@ import Login from './components/Login'
 import MainPage from './components/MainPage'
 import Notification from './components/Notification'
 import UserList from './components/UserList'
+import UserView from './components/UserView'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -46,6 +47,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/users" element={<UserList />} />
+        <Route path="/users/:id" element={<UserView />} />
       </Routes>
     </div>
   )
