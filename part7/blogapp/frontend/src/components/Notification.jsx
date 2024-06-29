@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux'
+import { Toast2 } from '@blueprintjs/core'
 
 const Notification = () => {
   const notification = useSelector((state) => state.notification)

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
+import { Card } from '@blueprintjs/core'
 
 const UserView = () => {
   const users = useSelector((state) => state.users)
@@ -12,15 +13,17 @@ const UserView = () => {
   const user = users.find((user) => user.id === userId)
 
   return (
-    <div>
+    <Card>
       <h2>{user.name}</h2>
       <h3>added blogs</h3>
-      <ul>
-        {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
-        ))}
-      </ul>
-    </div>
+      <Card>
+        <ul>
+          {user.blogs.map((blog) => (
+            <li key={blog.id}>{blog.title}</li>
+          ))}
+        </ul>
+      </Card>
+    </Card>
   )
 }
 

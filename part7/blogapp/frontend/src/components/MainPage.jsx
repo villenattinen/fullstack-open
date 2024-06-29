@@ -8,7 +8,7 @@ const MainPage = () => {
 
   return (
     <div>
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <Togglable buttonLabel="Create new blog" ref={blogFormRef}>
         <NewBlog />
       </Togglable>
       <BlogList />

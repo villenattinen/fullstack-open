@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { Button, Card, InputGroup } from '@blueprintjs/core'
 import { loginUser } from '../reducers/loginReducer'
 
 const Login = () => {
@@ -19,27 +20,31 @@ const Login = () => {
   }
 
   return (
-    <form onSubmit={handleLogin}>
-      <label>
-        Username:
-        <input
-          type="text"
-          data-testid="username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      </label>
-      <label>
-        Password:
-        <input
-          type="password"
-          value={password}
-          data-testid="password"
-          onChange={(e) => setPassword(e.target.value)}
-        />
-      </label>
-      <input type="submit" value="Login" />
-    </form>
+    <Card>
+      <form onSubmit={handleLogin}>
+        <label>
+          Username:
+          <InputGroup
+            placeholder="Username"
+            type="text"
+            data-testid="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        </label>
+        <label>
+          Password:
+          <InputGroup
+            placeholder="Password"
+            type="password"
+            value={password}
+            data-testid="password"
+            onChange={(e) => setPassword(e.target.value)}
+          />
+        </label>
+        <Button type="submit" text="Login" style={{ marginTop: 10 }} />
+      </form>
+    </Card>
   )
 }
 

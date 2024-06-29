@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useDispatch } from 'react-redux'
+import { Button, Card } from '@blueprintjs/core'
 import { createBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
@@ -7,6 +8,7 @@ const NewBlog = () => {
   const [title, setTitle] = useState('')
   const [url, setUrl] = useState('')
   const [author, setAuthor] = useState('')
+  const isSubmittable = title && url && author
 
   const dispatch = useDispatch()
 
@@ -32,7 +34,7 @@ const NewBlog = () => {
   }
 
   return (
-    <div>
+    <Card>
       <h2>Create a New Blog</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -62,9 +64,16 @@ const NewBlog = () => {
             onChange={handleAuthorChange}
           />
         </div>
-        <button type="submit">Create</button>
+        <Button
+          type="submit"
+          intent="success"
+          icon="add"
+          disabled={!isSubmittable}
+        >
+          Create
+        </Button>
       </form>
-    </div>
+    </Card>
   )
 }
 

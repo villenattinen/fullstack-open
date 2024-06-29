@@ -4,10 +4,10 @@ import { Routes, Route } from 'react-router-dom'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeLoggedInUser } from './reducers/loginReducer'
 import { initializeUsers } from './reducers/userReducer'
-import Blog from './components/Blog'
+import Blog from './components/blog/Blog'
 import Login from './components/Login'
 import MainPage from './components/MainPage'
-import NavigationMenu from './components/NavigationMenu'
+import NavigationBar from './components/NavigationBar'
 import Notification from './components/Notification'
 import UserList from './components/UserList'
 import UserView from './components/UserView'
@@ -25,7 +25,7 @@ const App = () => {
   if (!user) {
     return (
       <div>
-        <h2>blog app</h2>
+        <NavigationBar />
         <Notification />
         <Login />
       </div>
@@ -34,8 +34,7 @@ const App = () => {
 
   return (
     <div>
-      <NavigationMenu />
-      <h2>blog app</h2>
+      <NavigationBar />
       <Notification />
       <Routes>
         <Route path="/" element={<MainPage />} />
